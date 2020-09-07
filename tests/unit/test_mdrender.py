@@ -242,6 +242,18 @@ def test_render_triple_quote_and_lang_code():
     assert render(dummy_project, "```python\nprint(\"test\")\n```") == expected_result
 
 
+def test_render_url():
+    source = "[Link](https://example.com/a/x/1)"
+    expected_result = '<p><a href="https://example.com/a/x/1" target="_blank">Link</a></p>'
+    assert render(dummy_project, source) == expected_result
+
+
+def test_render_url_with_emoji_like():
+    source = "[Link](https://example.com/a/:x:/1)"
+    expected_result = '<p><a href="https://example.com/a/:x:/1" target="_blank">Link</a></p>'
+    assert render(dummy_project, source) == expected_result
+
+
 def test_cache_by_sha():
     @cache_by_sha
     def test_cache(project, text):
