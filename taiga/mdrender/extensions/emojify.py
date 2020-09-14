@@ -162,8 +162,7 @@ class EmojifyExtension(Extension):
 class EmojifyPreprocessor(Preprocessor):
 
     def run(self, lines):
-        pattern = re.compile(r':([a-z0-9\+\-_]+):')
-
+        emoji_pattern = re.compile(r':(?P<content>[a-z0-9\+\-_]+):')
         new_lines = []
 
         def emojify(match):
@@ -176,9 +175,17 @@ class EmojifyPreprocessor(Preprocessor):
             url = static(path)
             return '![{emoji}]({url})'.format(emoji=emoji, url=url)
 
+        def scape_emojis_in_urls(matched_url):
+            escape_emojis = lambda x: f"\:{x.group('content')}\:"
+            return re.sub(emoji_pattern, escape_emojis, matched_url.group())
+
         for line in lines:
+            # Search URLs and escape the emojis double dash
+            regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+            line = re.sub(regex, scape_emojis_in_urls, line)
+
             if line.strip():
-                line = pattern.sub(emojify, line)
+                line = emoji_pattern.sub(emojify, line)
 
             new_lines.append(line)
 

@@ -250,7 +250,7 @@ def test_render_url():
 
 def test_render_url_with_emoji_like():
     source = "[Link](https://example.com/a/:x:/1)"
-    expected_result = '<p><a href="https://example.com/a/:x:/1" target="_blank">Link</a></p>'
+    expected_result = '<p><a href="https://example.com/a/\:x\:/1" target="_blank">Link</a></p>'
     assert render(dummy_project, source) == expected_result
 
 
