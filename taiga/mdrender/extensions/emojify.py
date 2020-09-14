@@ -180,7 +180,7 @@ class EmojifyPreprocessor(Preprocessor):
             return re.sub(emoji_pattern, escape_emojis, matched_url.group())
 
         for line in lines:
-            # Search URLs and escape the emojis double dash
+            # Search URLs and scape emojis colon (:) character
             regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
             line = re.sub(regex, scape_emojis_in_urls, line)
 
