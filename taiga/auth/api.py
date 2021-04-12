@@ -23,6 +23,7 @@ from taiga.base.api import viewsets
 from taiga.base.decorators import list_route
 from taiga.base import exceptions as exc
 from taiga.base import response
+from taiga.users.signals import user_registered as user_registered_signal
 
 from .validators import PublicRegisterValidator
 from .validators import PrivateRegisterValidator
@@ -94,9 +95,13 @@ class AuthViewSet(viewsets.ViewSet):
 
         type = request.DATA.get("type", None)
         if type == "public":
-            return self._public_register(request)
+            response = self._public_register(request)
+            user_registered_signal.send(sender=user.__class__, user=user, register_type="public")
+            return response
         elif type == "private":
-            return self._private_register(request)
+            response = self._private_register(request)
+            user_registered_signal.send(sender=user.__class__, user=user, register_type="private")
+            return response
         raise exc.BadRequest(_("invalid registration type"))
 
     # Login view: /api/v1/auth
